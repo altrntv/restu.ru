@@ -1,0 +1,196 @@
+.b-example-divider {
+  height: 3rem;
+  background-color: rgba(0, 0, 0, .1);
+  border: solid rgba(0, 0, 0, .15);
+  border-width: 1px 0;
+  box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+
+.bi {
+  vertical-align: -.125em;
+  fill: currentColor;
+}
+
+.dropdown-menu {
+  position: static;
+  display: block;
+  width: auto;
+  margin: 4rem auto;
+}
+
+.dropdown-menu-macos {
+  display: grid;
+  gap: .25rem;
+  padding: .5rem;
+  border-radius: .5rem;
+}
+.dropdown-menu-macos .dropdown-item {
+  border-radius: .25rem;
+}
+
+.dropdown-item-danger {
+  color: var(--bs-red);
+}
+.dropdown-item-danger:hover,
+.dropdown-item-danger:focus {
+  color: #fff;
+  background-color: var(--bs-red);
+}
+.dropdown-item-danger.active {
+  background-color: var(--bs-red);
+}
+
+.btn-hover-light {
+  text-align: left;
+  background-color: var(--bs-white);
+  border-radius: .25rem;
+}
+.btn-hover-light:hover,
+.btn-hover-light:focus {
+  color: var(--bs-blue);
+  background-color: var(--bs-light);
+}
+
+.cal-month,
+.cal-days,
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: center;
+}
+
+.cal-months {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+}
+
+.cal-month-name {
+  grid-column-start: 2;
+  grid-column-end: 5;
+  text-align: center;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+.numInputWrapper {
+  grid-column-start: 5;
+  grid-column-end: 7;
+}
+
+.month-select .numInputWrapper {
+  grid-column-start: 2;
+  grid-column-end: 7;
+}
+
+
+.numInput {
+  border-radius: 0 0.25rem 0.25rem 0;
+  border-left: none;
+}
+
+.month-select .numInput {
+  border-radius: 0.25rem;
+  border: 1px solid #ced4da;
+  text-align: center;
+}
+
+.cal-weekday,
+.cal-btn,
+span.cal-btn {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  height: 3rem;
+  padding: 0;
+}
+
+span.cal-btn {
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+span.cal-btn.today {
+  border: 1px solid #ced4da;
+}
+
+span.cal-btn.prevMonthDay,
+span.cal-btn.nextMonthDay {
+  color: rgba(57,57,57,0.3);
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
+.cal-btn:not([disabled]) {
+  font-weight: 500;
+}
+.cal-btn:hover,
+.cal-btn:focus {
+  background-color: rgba(0, 0, 0, .1);
+}
+.cal-btn[disabled] {
+  opacity: .5;
+}
+
+span.cal-btn.selected,
+span.cal-btn.startRange,
+span.cal-btn.endRange,
+span.cal-btn.selected.inRange,
+span.cal-btn.startRange.inRange,
+span.cal-btn.endRange.inRange,
+span.cal-btn.selected:focus,
+span.cal-btn.startRange:focus,
+span.cal-btn.endRange:focus,
+span.cal-btn.selected:hover,
+span.cal-btn.startRange:hover,
+span.cal-btn.endRange:hover,
+span.cal-btn.selected.prevMonthDay,
+span.cal-btn.startRange.prevMonthDay,
+span.cal-btn.endRange.prevMonthDay,
+span.cal-btn.selected.nextMonthDay,
+span.cal-btn.startRange.nextMonthDay,
+span.cal-btn.endRange.nextMonthDay {
+  background: #569ff7;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  color: #fff;
+  border-color: #569ff7;
+}
+span.cal-btn.selected.startRange,
+span.cal-btn.startRange.startRange,
+span.cal-btn.endRange.startRange {
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+span.cal-btn.selected.endRange,
+span.cal-btn.startRange.endRange,
+span.cal-btn.endRange.endRange {
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+span.cal-btn.selected.startRange + .endRange:not(:nth-child(7n+1)),
+span.cal-btn.startRange.startRange + .endRange:not(:nth-child(7n+1)),
+span.cal-btn.endRange.startRange + .endRange:not(:nth-child(7n+1)) {
+  -webkit-box-shadow: -10px 0 0 #569ff7;
+          box-shadow: -10px 0 0 #569ff7;
+}
+span.cal-btn.selected.startRange.endRange,
+span.cal-btn.startRange.startRange.endRange,
+span.cal-btn.endRange.startRange.endRange {
+  border-radius: 50px;
+}
+span.cal-btn.inRange {
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, .1);
+}
+span.cal-btn.flatpickr-disabled,
+span.cal-btn.flatpickr-disabled:hover,
+span.cal-btn.prevMonthDay,
+span.cal-btn.nextMonthDay,
+span.cal-btn.notAllowed,
+span.cal-btn.notAllowed.prevMonthDay,
+span.cal-btn.notAllowed.nextMonthDay {
+  color: rgba(57,57,57,0.3);
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
