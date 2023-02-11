@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 class ReportService extends ApiServerService
 {
-    public function common($data, $report)
+    public function common($data, $report): array
     {
         try
         {
@@ -22,7 +22,7 @@ class ReportService extends ApiServerService
         return $request;
     }
 
-    public function regularDelivery($data, $report)
+    public function regularDelivery($data, $report): array
     {
         $this->authorization($data, $report);
         $request = $this->requestOLAPv2($report);
@@ -44,7 +44,7 @@ class ReportService extends ApiServerService
         return $request;
     }
 
-    public function wages($data, $report)
+    public function wages($data, $report): array
     {
         $this->authorization($data, $report);
 
@@ -68,8 +68,8 @@ class ReportService extends ApiServerService
                     {
                         if($a['employeeId'] == $e['id'])
                         {
-                            array_push($result, [
-                                'date' => date("d.m.Y", strtotime($a['dateFrom'])),
+                            $result[] = [
+                                'date' => Carbon::parse($a['dateFrom'])->format('d.m.Y'),
                                 'department' => $a['departmentName'],
                                 'employee' => $e['name'],
                                 'role' => $a['roleId'],
@@ -79,7 +79,7 @@ class ReportService extends ApiServerService
                                 'revenue' => 0,
                                 'salary' => 0,
                                 'bonus' => 0,
-                            ]);
+                            ];
                         }
                     }
                 }
@@ -164,7 +164,7 @@ class ReportService extends ApiServerService
         return $result;
     }
 
-    public function staleOrder($data, $report)
+    public function staleOrder($data, $report): array
     {
         $this->authorization($data, $report);
         $request = $this->requestOLAPv2($report);
@@ -178,9 +178,8 @@ class ReportService extends ApiServerService
             $request[$i]['Delivery.SendTime'] = Carbon::parse($request[$i]['Delivery.SendTime'])->format('d.m.Y H:i:s');
             $request[$i]['Delivery.ActualTime'] = Carbon::parse($request[$i]['Delivery.ActualTime'])->format('d.m.Y H:i:s');
 
-            $request[$i]['Delivery.TimeShelf'] = Carbon::parse($request[$i]['Delivery.SendTime'])->diff($request[$i]['Delivery.CookingFinishTime'])->format('%i');
-            $request[$i]['Delivery.TimePreparationDelivery'] = Carbon::parse($request[$i]['Delivery.ActualTime'])->diff($request[$i]['Delivery.CookingFinishTime'])->format('%i');
-
+            $request[$i]['Delivery.TimeShelf'] = Carbon::parse($request[$i]['Delivery.SendTime'])->diffInMinutes($request[$i]['Delivery.CookingFinishTime']);
+            $request[$i]['Delivery.TimePreparationDelivery'] = Carbon::parse($request[$i]['Delivery.ActualTime'])->diffInMinutes($request[$i]['Delivery.CookingFinishTime']);
 
             $request[$i]['Delivery.CustomerPhone'] = $this->phoneFormat($request[$i]['Delivery.CustomerPhone']);
         }
@@ -188,7 +187,7 @@ class ReportService extends ApiServerService
         return $request;
     }
 
-    public function costPrice($data, $report)
+    public function costPrice($data, $report): array
     {
         $this->authorization($data, $report);
         $request = $this->requestOLAPv2($report);
@@ -207,7 +206,7 @@ class ReportService extends ApiServerService
         return $request;
     }
 
-    public function averageDeliveryTime($data, $report)
+    public function averageDeliveryTime($data, $report): array
     {
         $this->authorization($data, $report);
         $request = $this->requestOLAPv2($report);
@@ -232,7 +231,7 @@ class ReportService extends ApiServerService
         return $request;
     }
 
-    public function unique($data, $report)
+    public function unique($data, $report): array
     {
         $this->authorization($data, $report);
         $request = $this->requestOLAPv2($report);
@@ -245,6 +244,35 @@ class ReportService extends ApiServerService
             } else {
                 $request[$i]["Type"] = "Повторный клиент";
             }
+        }
+
+        return $request;
+    }
+
+    public function executionTime($data, $report): array
+    {
+        $this->authorization($data, $report);
+        $request = $this->requestOLAPv2($report);
+        $this->logout();
+
+        for($i = 0; $i < count($request); $i++)
+        {
+            $request[$i]["OpenDate.Typed"] = Carbon::parse($request[$i]['OpenDate.Typed'])->format('d.m.Y');
+            $request[$i]["OpenTime"] = Carbon::parse($request[$i]['OpenTime'])->format('d.m.Y H:i:s');
+            $request[$i]["CloseTime"] = Carbon::parse($request[$i]['CloseTime'])->format('d.m.Y H:i:s');
+            $request[$i]['Delivery.CookingFinishTime'] = Carbon::parse($request[$i]['Delivery.CookingFinishTime'])->format('d.m.Y H:i:s');
+            $request[$i]["Delivery.ActualTime"] = Carbon::parse($request[$i]['Delivery.ActualTime'])->format('d.m.Y H:i:s');
+            $request[$i]["Delivery.SendTime"] = Carbon::parse($request[$i]['Delivery.SendTime'])->format('d.m.Y H:i:s');
+            $request[$i]["DishServicePrintTime"] = Carbon::parse($request[$i]['DishServicePrintTime'])->format('d.m.Y H:i:s');
+
+
+            //$request[$i]["Delivery.WayDuration"] = Carbon::parse($request[$i]['Delivery.WayDuration'])->format('%hч. %iм.');
+            $request[$i]["ConfirmationTime"] = Carbon::parse($request[$i]['DishServicePrintTime'])->diff($request[$i]['OpenTime'])->format('%hч. %iм.');
+            $request[$i]["CookingTime"] = Carbon::parse($request[$i]['DishServicePrintTime'])->diff($request[$i]['Delivery.CookingFinishTime'])->format('%hч. %iм.');
+            $request[$i]["WaitingTime"] = Carbon::parse($request[$i]['Delivery.CookingFinishTime'])->diff($request[$i]['Delivery.SendTime'])->format('%hч. %iм.');
+            $request[$i]["ServiceTime"] = Carbon::parse($request[$i]['OpenTime'])->diff($request[$i]['Delivery.ActualTime'])->format('%hч. %iм.');
+
+            $request[$i]['Delivery.CustomerPhone'] = $this->phoneFormat($request[$i]['Delivery.CustomerPhone']);
         }
 
         return $request;

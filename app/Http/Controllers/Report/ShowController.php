@@ -11,10 +11,6 @@ class ShowController extends Controller
     {
         $report = Organization::where('slug', $organization_slug)->firstorfail()->reports()->where('slug', $report_slug)->firstorfail();
 
-//        if($report->id == 9)
-//        {
-//
-//        }
         return view("report.show", [
             "report" => $report
         ]);
