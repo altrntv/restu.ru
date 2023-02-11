@@ -7,7 +7,7 @@ use App\Models\Report;
 
 class ShowController extends BaseController
 {
-    public function __invoke(ShowRequest $request, Report $report)
+    public function __invoke(ShowRequest $request, Report $report): array
     {
         $data = $request->validated();
 
@@ -41,11 +41,18 @@ class ShowController extends BaseController
                 $request = $this->service->common($data, $report);
             }
         }
-        else if($report->organization->name == 'Good Street Food')
+//        else if($report->organization->name == 'Good Street Food')
+//        {
+//            if($report->slug == 'wages')
+//            {
+//                $request = $this->service->wages($data, $report);
+//            }
+//        }
+        else if($report->organization->name == 'Лосось №1')
         {
-            if($report->slug == 'wages')
+            if($report->slug == 'execution-time')
             {
-                $request = $this->service->wages($data, $report);
+                $request = $this->service->executionTime($data, $report);
             }
         }
 
