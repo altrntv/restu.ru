@@ -222,10 +222,10 @@ class ReportService extends ApiServerService
             $request[$i]['Delivery.SendTime'] = Carbon::parse($request[$i]['Delivery.SendTime'])->format('d.m.Y H:i:s');
             $request[$i]['Delivery.ActualTime'] = Carbon::parse($request[$i]['Delivery.ActualTime'])->format('d.m.Y H:i:s');
 
-            $request[$i]['Delivery.CookingTime'] = Carbon::parse($request[$i]['DishServicePrintTime'])->diff($request[$i]['Delivery.CookingFinishTime'])->format('%i');
-            $request[$i]['Delivery.DeliveryTime'] = Carbon::parse($request[$i]['Delivery.ActualTime'])->diff($request[$i]['Delivery.SendTime'])->format('%i');
-            $request[$i]['Delivery.OrderCompletionTime'] = Carbon::parse($request[$i]['OpenTime'])->diff($request[$i]['Delivery.ActualTime'])->format('%i');
-            $request[$i]['Delivery.ClientWaitingTime'] = Carbon::parse($request[$i]['DishServicePrintTime'])->diff($request[$i]['Delivery.ActualTime'])->format('%i');
+            $request[$i]['Delivery.CookingTime'] = Carbon::parse($request[$i]['DishServicePrintTime'])->diffInMinutes($request[$i]['Delivery.CookingFinishTime']);
+            $request[$i]['Delivery.DeliveryTime'] = Carbon::parse($request[$i]['Delivery.ActualTime'])->diffInMinutes($request[$i]['Delivery.SendTime']);
+            $request[$i]['Delivery.OrderCompletionTime'] = Carbon::parse($request[$i]['OpenTime'])->diffInMinutes($request[$i]['Delivery.ActualTime']);
+            $request[$i]['Delivery.ClientWaitingTime'] = Carbon::parse($request[$i]['DishServicePrintTime'])->diffInMinutes($request[$i]['Delivery.ActualTime']);
         }
 
         return $request;
