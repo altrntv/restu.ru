@@ -138,9 +138,17 @@ class ApiServerService
                 $data['from'] = Carbon::parse( '01.'. $data['date'])->format('Y-m-d');
                 $data['to'] = Carbon::parse( $data['from'])->endOfMonth()->toDateString();
             } else if($data['type'] == 'range') {
-                $array = explode(' — ', $data['date']);
-                $data['from'] = Carbon::parse($array[0])->format('Y-m-d');
-                $data['to'] = Carbon::parse($array[1])->format('Y-m-d');
+                if(strlen($data['date']) > 10)
+                {
+                    $array = explode(' — ', $data['date']);
+                    $data['from'] = Carbon::parse($array[0])->format('Y-m-d');
+                    $data['to'] = Carbon::parse($array[1])->format('Y-m-d');
+                }
+                else
+                {
+                    $data['from'] = Carbon::parse($data['date'])->format('Y-m-d');
+                    $data['to'] = Carbon::parse($data['date'])->format('Y-m-d');
+                }
             } else if($data['type'] == 'day') {
                 $data['from'] = Carbon::parse($data['date'])->format('Y-m-d');
                 $data['to'] = Carbon::parse($data['date'])->format('Y-m-d');
