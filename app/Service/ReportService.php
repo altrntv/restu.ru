@@ -66,7 +66,7 @@ class ReportService extends ApiServerService
                 {
                     foreach($employees as $e)
                     {
-                        if($a['employeeId'] == $e['id'])
+                        if($a['employeeId'] == $e['id'] && isset($a['dateTo']))
                         {
                             $result[] = [
                                 'date' => Carbon::parse($a['dateFrom'])->format('d.m.Y'),
