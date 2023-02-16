@@ -30,7 +30,23 @@ class Organization extends Model
     }
 
     /**
-     * Get organization reports
+     * Get organization menuboards
+     */
+    public function menuboards(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Menuboard::class, 'organization_id', 'id');
+    }
+
+    /**
+     * Get organization nomenclatures
+     */
+    public function nomenclatures(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Nomenclature::class, 'organization_id', 'id');
+    }
+
+    /**
+     * Get organization admin reports
      */
     public function admin_reports(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
