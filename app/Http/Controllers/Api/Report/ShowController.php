@@ -12,9 +12,13 @@ class ShowController extends BaseController
         $data = $request->validated();
 
         if($report->organization->name == 'Димми Ямми') {
-            if($report->slug == 'common-time' || $report->slug == 'preorder-time')
+            if($report->slug == 'common-time')
             {
-                $request = $this->service->regularDelivery($data, $report);
+                $request = $this->service->commonTime($data, $report);
+            }
+            else if($report->slug == 'preorder-time')
+            {
+                $request = $this->service->preorderTime($data, $report);
             }
             else if($report->slug == 'stale-order')
             {
