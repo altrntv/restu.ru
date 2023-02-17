@@ -162,6 +162,40 @@ class ApiServerService
         }
     }
 
+    public function getCorrectTime($data)
+    {
+        if(isset($data['OpenDate.Typed']))
+        {
+            $data['OpenDate.Typed'] = Carbon::parse($data['OpenDate.Typed'])->format('d.m.Y');
+        }
+        if(isset($data['Delivery.ExpectedTime']))
+        {
+            $data['Delivery.ExpectedTime'] = Carbon::parse($data['Delivery.ExpectedTime'])->format('d.m.Y H:i:s');
+        }
+        if(isset($data['Delivery.ActualTime']))
+        {
+            $data['Delivery.ActualTime'] = Carbon::parse($data['Delivery.ActualTime'])->format('d.m.Y H:i:s');
+        }
+        if(isset($data['DishServicePrintTime']))
+        {
+            $data['DishServicePrintTime'] = Carbon::parse($data['DishServicePrintTime'])->format('d.m.Y H:i:s');
+        }
+        if(isset($data['Delivery.CookingFinishTime']))
+        {
+            $data['Delivery.CookingFinishTime'] = Carbon::parse($data['Delivery.CookingFinishTime'])->format('d.m.Y H:i:s');
+        }
+        if(isset($data['OpenTime']))
+        {
+            $data['OpenTime'] = Carbon::parse($data['OpenTime'])->format('d.m.Y H:i:s');
+        }
+        if(isset($data['Delivery.SendTime']))
+        {
+            $data['Delivery.SendTime'] = Carbon::parse($data['Delivery.SendTime'])->format('d.m.Y H:i:s');
+        }
+
+        return $data;
+    }
+
     public function phoneFormat($phone) {
         if($phone) {
             $phone = trim($phone);
