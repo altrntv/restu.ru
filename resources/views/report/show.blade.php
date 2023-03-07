@@ -194,12 +194,15 @@
     @endif
 
     <script>
+        let reportId = {!! $report->id !!};
+
         let pivot = new WebDataRocks({
             container: "#wdr-component",
             toolbar: false,
             global: {
                 localization: "{!! asset('/webdatarocks/loc/ru.json') !!}"
             },
+            customizeCell: customizeCellFunction
         })
 
         let svgBlock = document.getElementById("svg-block")
@@ -229,7 +232,32 @@
             } else {
                 alert('Введите дату')
             }
+        }
 
+        function customizeCellFunction(cellBuilder, cellData) {
+            //let dayOfWeek;
+            if(reportId === 6)
+            {
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "Delivery.CookingFinishTime" && cellBuilder.text)
+                {
+                    const [day, month, year, time] = cellBuilder.text.split(/[. :]/);
+                    const date = new Date(year, month - 1, day);
+
+                    const daysOfWeek = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+                    dayOfWeek = daysOfWeek[date.getDay()];
+                }
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "Delivery.TimePreparationDelivery" )
+                {
+                    if(dayOfWeek === 'сб' || dayOfWeek === 'вс')
+                    {
+                        if (cellData.value > 60) {
+                            cellBuilder.style['background-color'] = "#f53b57";
+                        } else if (cellData.value <= 60) {
+                            cellBuilder.style['background-color'] = "#05c46b";
+                        }
+                    }
+                }
+            }
         }
 
         function exportData(type) {
