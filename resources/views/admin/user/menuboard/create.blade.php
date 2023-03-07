@@ -2,6 +2,12 @@
 
 @section('title', 'Панель администратора || Новый менюборд')
 
+@section('header')
+    <!-- Styles select2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+@endsection
+
 @section('content')
     <div class="container px-4 py-5">
 
@@ -43,6 +49,15 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="menu" class="form-label">Список позиций</label>
+                    <select class="form-select @error('menu') is-invalid @enderror" id="multiple-select-field" name="menu[]" data-placeholder="Выберете позиции" multiple>
+                        @foreach($nomenclatures as $nomenclature)
+                            <option value="{{ $nomenclature->id }}">{{ $nomenclature->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-3">
                     <label for="organization" class="form-label">Организация</label>
                     <select class="form-select @error('organization_id') is-invalid @enderror" id="organization" name="organization_id">
                         @foreach($organizations as $organization)
@@ -62,5 +77,20 @@
 
     </div>
 
+@endsection
 
+@section('footer')
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        // For Select2 4.1
+        $("#multiple-select-field").select2({
+            theme: "bootstrap-5",
+            selectionCssClass: "select2--small",
+            dropdownCssClass: "select2--small",
+            closeOnSelect: false
+        });
+    </script>
 @endsection

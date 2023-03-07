@@ -160,6 +160,7 @@
                             formats: res.data.settings.formats,
                             conditions: res.data.settings.conditions
                         })
+
                         svgBlock.classList.remove("active");
                         document.querySelector('#excel').disabled = false;
                         document.querySelector('#fields').disabled = false;

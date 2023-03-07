@@ -13,7 +13,7 @@
     <form action="{{ route('admin.user.menuboard.delete', $menuboard->id) }}" method="POST" class="d-inline-block">
         @csrf
         @method('DELETE')
-        <input type="submit" class="btn btn-danger btn-sm" value="Удалить отчёт">
+        <input type="submit" class="btn btn-danger btn-sm" value="Удалить менюборд">
     </form>
 
 </section>
