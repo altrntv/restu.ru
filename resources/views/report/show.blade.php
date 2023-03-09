@@ -58,39 +58,11 @@
                     </div>
                 @endif
 
-{{--                <label for="storage" class="form-label">Склад</label>--}}
-{{--                <div class="input-group mb-3">--}}
-{{--                    <select class="form-select" id="storage">--}}
-{{--                        <option value="Склад_ДСО (Солнечная поляна)" selected>Склад_ДСО (Солнечная поляна)</option>--}}
-{{--                        <option value="Склад_ДСО2 (Власихинская)">Склад_ДСО2 (Власихинская)</option>--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-
-{{--                <label for="dish" class="form-label">Блюдо</label>--}}
-{{--                <div class="input-group mb-3">--}}
-{{--                    <select class="form-select" id="dish">--}}
-{{--                        <option>Reactive</option>--}}
-{{--                        <option>Solution</option>--}}
-{{--                        <option>Conglomeration</option>--}}
-{{--                        <option>Algoritm</option>--}}
-{{--                        <option>Holistic</option>--}}
-{{--                    </select>--}}
-{{--                </div>--}}
-
                 <div class="input-group mb-3">
                     <button id="excel" class="btn btn-success" type="button" onclick="exportData('excel')" disabled>Экспорт в Excel</button>
                     <button id="fields" class="btn btn-outline-dark" type="button" onclick="fieldList()" disabled>Поля</button>
                     <button id="fullscreen" class="btn btn-outline-dark" type="button" onclick="openFullscreen()" disabled>Полноэкранный</button>
                 </div>
-
-{{--                <form action="/api/reports/{{ $report->id }}" method="POST">--}}
-{{--                    @csrf--}}
-
-{{--                    <input type="text" name="date" value="11.2022">--}}
-{{--                    <input type="text" name="type" value="month">--}}
-
-{{--                    <input type="submit" value="send">--}}
-{{--                </form>--}}
 
             </div>
 
@@ -258,6 +230,39 @@
                     }
                 }
             }
+            else if(reportId === 10)
+            {
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "CookingTime" && cellData.value > 0 ) {
+                    if (cellData.value >= 15) {
+                        cellBuilder.style['background-color'] = "#ff8080";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    } else if (cellData.value < 15) {
+                        cellBuilder.style['background-color'] = "#85e085";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    }
+                }
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "Delivery.WayDuration" && cellData.value > 0 ) {
+                    if (cellData.value >= 25) {
+                        cellBuilder.style['background-color'] = "#ff8080";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    } else if (cellData.value < 25) {
+                        cellBuilder.style['background-color'] = "#85e085";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    }
+                }
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "WaitingTime" && cellData.value > 0 ) {
+                    cellBuilder.text = getTimeFromMins(cellData.value);
+                }
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "ServiceTime" && cellData.value > 0 ) {
+                    if (cellData.value >= 59) {
+                        cellBuilder.style['background-color'] = "#ff8080";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    } else if (cellData.value < 59) {
+                        cellBuilder.style['background-color'] = "#85e085";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    }
+                }
+            }
         }
 
         function exportData(type) {
@@ -291,6 +296,12 @@
             } else if (document.msExitFullscreen) { /* IE/Edge */
                 document.msExitFullscreen();
             }
+        }
+
+        function getTimeFromMins(mins) {
+            let hours = Math.trunc(mins/60);
+            let minutes = mins % 60;
+            return hours + "ч. " + minutes + "м.";
         }
     </script>
 

@@ -59,6 +59,13 @@ class ShowController extends BaseController
                 $request = $this->service->executionTime($data, $report);
             }
         }
+        else if($report->organization->name == 'ООО «РАШЭН ТРАДИШН»')
+        {
+            if($report->slug == 'production-document')
+            {
+                $request = $this->service->productionDocument($data, $report);
+            }
+        }
 
         return [
             'request' => $request,
