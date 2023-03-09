@@ -261,6 +261,42 @@
                     }
                 }
             }
+            else if(reportId === 10)
+            {
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "CookingTime" && cellData.value > 0 ) {
+                    if (cellData.value >= 15) {
+                        cellBuilder.style['background-color'] = "#ff8080";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    } else if (cellData.value < 15) {
+                        cellBuilder.style['background-color'] = "#85e085";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    }
+                }
+
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "Delivery.WayDuration" && cellData.value > 0 ) {
+                    if (cellData.value >= 25) {
+                        cellBuilder.style['background-color'] = "#ff8080";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    } else if (cellData.value < 25) {
+                        cellBuilder.style['background-color'] = "#85e085";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    }
+                }
+
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "WaitingTime" && cellData.value > 0 ) {
+                    cellBuilder.text = getTimeFromMins(cellData.value);
+                }
+
+                if (cellData && cellData.type === "value" && cellData.measure && cellData.measure.uniqueName === "ServiceTime" && cellData.value > 0 ) {
+                    if (cellData.value >= 59) {
+                        cellBuilder.style['background-color'] = "#ff8080";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    } else if (cellData.value < 59) {
+                        cellBuilder.style['background-color'] = "#85e085";
+                        cellBuilder.text = getTimeFromMins(cellData.value);
+                    }
+                }
+            }
         }
 
         function exportData(type) {
@@ -294,6 +330,12 @@
             } else if (document.msExitFullscreen) { /* IE/Edge */
                 document.msExitFullscreen();
             }
+        }
+
+        function getTimeFromMins(mins) {
+            let hours = Math.trunc(mins/60);
+            let minutes = mins % 60;
+            return hours + "ч. " + minutes + "м.";
         }
     </script>
 

@@ -46,9 +46,12 @@ class ApiServerService
 
     public function requestOLAPv2($report, $settings = ''): array
     {
-        try
-        {
+//        try
+//        {
             $json_request = json_decode($report['request_json'], true);
+
+            //dd($this->token, $json_request['reportType']);
+
             if($settings == 'sales')
             {
                 $json_request[$settings]['filters']['OpenDate.Typed']['from'] = $this->data['from'];
@@ -63,18 +66,27 @@ class ApiServerService
             }
             else
             {
-                $json_request['filters']['OpenDate.Typed']['from'] = $this->data['from'];
-                $json_request['filters']['OpenDate.Typed']['to'] = $this->data['to'];
+                if($json_request['reportType'] === 'SALES' || $json_request['reportType'] === 'DELIVERIES')
+                {
+                    $json_request['filters']['OpenDate.Typed']['from'] = $this->data['from'];
+                    $json_request['filters']['OpenDate.Typed']['to'] = $this->data['to'];
+                }
+                else if($json_request['reportType'] === 'TRANSACTIONS')
+                {
+//                    $json_request['filters']['DateTime.DateTyped']['from'] = $this->data['from'];
+//                    $json_request['filters']['DateTime.DateTyped']['to'] = $this->data['to'];
+                    $json_request['filters']['DateTime.Typed']['from'] = $this->data['from'].'T00:01:00.000';
+                    $json_request['filters']['DateTime.Typed']['to'] = $this->data['to'].'T23:59:00.000';
+                }
                 $request_olap = $this->client->post($this->server . '/api/v2/reports/olap?key=' . $this->token, [ 'json' => $json_request ]);
             }
 
-            //$request_olap = $this->client->post($this->server . '/api/v2/reports/olap?key=' . $this->token, [ 'json' => $json_request[$settings] ]);
             $result = json_decode($request_olap->getBody()->getContents(),true);
-        }
-        catch (\Exception $exception)
-        {
-            abort(500, "Ошибка запроса данных");
-        }
+//        }
+//        catch (\Exception $exception)
+//        {
+//            abort(500, "Ошибка запроса данных");
+//        }
 
         return $result['data'];
     }
@@ -130,7 +142,23 @@ class ApiServerService
         return $result['employee'];
     }
 
-    public function dateHandler($data)
+    public function events(): array
+    {
+        try
+        {
+            $request_attendances = $this->client->get($this->server . '/api/events?key=' . $this->token . '&from_time=' . $this->data['from'] . 'T00:00:00.000&to_time=' . $this->data['to'] . 'T23:59:59.999');
+            $xml = simplexml_load_string($request_attendances->getBody(),'SimpleXMLElement',LIBXML_NOCDATA);
+            $result = json_decode(json_encode($xml), true);
+        }
+        catch (\Exception $exception)
+        {
+            abort(500, "Ошибка получения событий");
+        }
+
+        return $result['event'];
+    }
+
+    public function dateHandler($data) : array
     {
         try
         {
@@ -162,35 +190,43 @@ class ApiServerService
         }
     }
 
-    public function getCorrectTime($data)
+    public function getCorrectTime($data, $tz = 'Asia/Barnaul')
     {
         if(isset($data['OpenDate.Typed']))
         {
-            $data['OpenDate.Typed'] = Carbon::parse($data['OpenDate.Typed'])->format('d.m.Y');
+            $data['OpenDate.Typed'] = Carbon::parse($data['OpenDate.Typed'], $tz)->format('d.m.Y');
+        }
+        if(isset($data['DateTime.DateTyped']))
+        {
+            $data['DateTime.DateTyped'] = Carbon::parse($data['DateTime.DateTyped'], $tz)->format('d.m.Y');
         }
         if(isset($data['Delivery.ExpectedTime']))
         {
-            $data['Delivery.ExpectedTime'] = Carbon::parse($data['Delivery.ExpectedTime'])->format('d.m.Y H:i:s');
+            $data['Delivery.ExpectedTime'] = Carbon::parse($data['Delivery.ExpectedTime'], $tz)->format('d.m.Y H:i:s');
         }
         if(isset($data['Delivery.ActualTime']))
         {
-            $data['Delivery.ActualTime'] = Carbon::parse($data['Delivery.ActualTime'])->format('d.m.Y H:i:s');
+            $data['Delivery.ActualTime'] = Carbon::parse($data['Delivery.ActualTime'], $tz)->format('d.m.Y H:i:s');
         }
         if(isset($data['DishServicePrintTime']))
         {
-            $data['DishServicePrintTime'] = Carbon::parse($data['DishServicePrintTime'])->format('d.m.Y H:i:s');
+            $data['DishServicePrintTime'] = Carbon::parse($data['DishServicePrintTime'], $tz)->format('d.m.Y H:i:s');
         }
         if(isset($data['Delivery.CookingFinishTime']))
         {
-            $data['Delivery.CookingFinishTime'] = Carbon::parse($data['Delivery.CookingFinishTime'])->format('d.m.Y H:i:s');
+            $data['Delivery.CookingFinishTime'] = Carbon::parse($data['Delivery.CookingFinishTime'], $tz)->format('d.m.Y H:i:s');
         }
         if(isset($data['OpenTime']))
         {
-            $data['OpenTime'] = Carbon::parse($data['OpenTime'])->format('d.m.Y H:i:s');
+            $data['OpenTime'] = Carbon::parse($data['OpenTime'], $tz)->format('d.m.Y H:i:s');
+        }
+        if(isset($data['CloseTime']))
+        {
+            $data['CloseTime'] = Carbon::parse($data['CloseTime'], $tz)->format('d.m.Y H:i:s');
         }
         if(isset($data['Delivery.SendTime']))
         {
-            $data['Delivery.SendTime'] = Carbon::parse($data['Delivery.SendTime'])->format('d.m.Y H:i:s');
+            $data['Delivery.SendTime'] = Carbon::parse($data['Delivery.SendTime'], $tz)->format('d.m.Y H:i:s');
         }
 
         return $data;

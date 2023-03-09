@@ -269,22 +269,80 @@ class ReportService extends ApiServerService
 
         for($i = 0; $i < count($request); $i++)
         {
-            $request[$i]["OpenDate.Typed"] = Carbon::parse($request[$i]['OpenDate.Typed'])->format('d.m.Y');
-            $request[$i]["OpenTime"] = Carbon::parse($request[$i]['OpenTime'])->format('d.m.Y H:i:s');
-            $request[$i]["CloseTime"] = Carbon::parse($request[$i]['CloseTime'])->format('d.m.Y H:i:s');
-            $request[$i]['Delivery.CookingFinishTime'] = Carbon::parse($request[$i]['Delivery.CookingFinishTime'])->format('d.m.Y H:i:s');
-            $request[$i]["Delivery.ActualTime"] = Carbon::parse($request[$i]['Delivery.ActualTime'])->format('d.m.Y H:i:s');
-            $request[$i]["Delivery.SendTime"] = Carbon::parse($request[$i]['Delivery.SendTime'])->format('d.m.Y H:i:s');
-            $request[$i]["DishServicePrintTime"] = Carbon::parse($request[$i]['DishServicePrintTime'])->format('d.m.Y H:i:s');
+            $request[$i] = $this->getCorrectTime($request[$i], 'Asia/Almaty');
 
-
-            //$request[$i]["Delivery.WayDuration"] = Carbon::parse($request[$i]['Delivery.WayDuration'])->format('%hч. %iм.');
-            $request[$i]["ConfirmationTime"] = Carbon::parse($request[$i]['DishServicePrintTime'])->diff($request[$i]['OpenTime'])->format('%hч. %iм.');
-            $request[$i]["CookingTime"] = Carbon::parse($request[$i]['DishServicePrintTime'])->diff($request[$i]['Delivery.CookingFinishTime'])->format('%hч. %iм.');
-            $request[$i]["WaitingTime"] = Carbon::parse($request[$i]['Delivery.CookingFinishTime'])->diff($request[$i]['Delivery.SendTime'])->format('%hч. %iм.');
-            $request[$i]["ServiceTime"] = Carbon::parse($request[$i]['OpenTime'])->diff($request[$i]['Delivery.ActualTime'])->format('%hч. %iм.');
+            $request[$i]["ConfirmationTime"] = Carbon::parse($request[$i]['DishServicePrintTime'])->diffInMinutes($request[$i]['OpenTime']);
+            $request[$i]["CookingTime"] = Carbon::parse($request[$i]['DishServicePrintTime'])->diffInMinutes($request[$i]['Delivery.CookingFinishTime']);
+            $request[$i]["WaitingTime"] = Carbon::parse($request[$i]['Delivery.CookingFinishTime'])->diffInMinutes($request[$i]['Delivery.SendTime']);
+            $request[$i]["ServiceTime"] = Carbon::parse($request[$i]['OpenTime'])->diffInMinutes($request[$i]['Delivery.ActualTime']);
 
             $request[$i]['Delivery.CustomerPhone'] = $this->phoneFormat($request[$i]['Delivery.CustomerPhone']);
+        }
+
+        return $request;
+    }
+
+    public function productionDocument($data, $report): array
+    {
+        $this->authorization($data, $report);
+        $request = $this->requestOLAPv2($report);
+        $events = $this->events();
+        $employees = $this->employees();
+        $this->logout();
+
+        $production = [];
+        foreach ($events as $event)
+        {
+            if ($event['type'] == 'documentCreated')
+            {
+                foreach ($event['attribute'] as $attribute)
+                {
+                    if($attribute['name'] == 'user')
+                    {
+                        $name = $attribute['value'];
+                    }
+                    if($attribute['name'] == 'documentNumber')
+                    {
+                        $number = $attribute['value'];
+                    }
+                }
+                $production[] = [
+                    'employee' => $name,
+                    'documentNumber' => $number
+                ];
+            }
+        }
+
+        foreach ($employees as $employee)
+        {
+            for ($i = 0; $i < count($production); $i++)
+            {
+                if ($employee['id'] == $production[$i]['employee'])
+                {
+                    $production[$i]['employee'] = $employee['name'];
+                }
+            }
+        }
+
+        foreach ($production as $prod)
+        {
+            for ($i = 0; $i < count($request); $i++)
+            {
+                if($prod['documentNumber'] == $request[$i]['Document'])
+                {
+                    $request[$i]['Employee'] = $prod['employee'];
+                }
+            }
+        }
+
+        for ($i = 0; $i < count($request); $i++)
+        {
+            $request[$i] = $this->getCorrectTime($request[$i]);
+
+            if(!isset($request[$i]['Employee']))
+            {
+                $request[$i]['Employee'] = 'Создан не в РМС';
+            }
         }
 
         return $request;
