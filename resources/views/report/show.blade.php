@@ -13,8 +13,12 @@
     <script src='{{ asset('/webdatarocks/webdatarocks.js') }}' type='text/javascript'></script>
 
     <!-- Styles select2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />--}}
+{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />--}}
+
+    <link href='{{ asset('/select2/select2.min.css') }}' rel='stylesheet' type='text/css'/>
+    <link href='{{ asset('/select2/select2-bootstrap-5-theme.min.css') }}' rel='stylesheet' type='text/css'/>
+
 @endsection
 
 @section('content')
@@ -58,24 +62,24 @@
                     </div>
                 @endif
 
-{{--                <label for="storage" class="form-label">Склад</label>--}}
-{{--                <div class="input-group mb-3">--}}
-{{--                    <select class="form-select" id="storage">--}}
-{{--                        <option value="Склад_ДСО (Солнечная поляна)" selected>Склад_ДСО (Солнечная поляна)</option>--}}
-{{--                        <option value="Склад_ДСО2 (Власихинская)">Склад_ДСО2 (Власихинская)</option>--}}
-{{--                    </select>--}}
-{{--                </div>--}}
+                <label for="storage" class="form-label">Склад</label>
+                <div class="input-group mb-3">
+                    <select class="form-select" id="storage">
+                        <option value="Склад_ДСО (Солнечная поляна)" selected>Солнечная поляна</option>
+                        <option value="Склад_ДСО2 (Власихинская)">Власихинская</option>
+                    </select>
+                </div>
 
-{{--                <label for="dish" class="form-label">Блюдо</label>--}}
-{{--                <div class="input-group mb-3">--}}
-{{--                    <select class="form-select" id="dish">--}}
-{{--                        <option>Reactive</option>--}}
-{{--                        <option>Solution</option>--}}
-{{--                        <option>Conglomeration</option>--}}
-{{--                        <option>Algoritm</option>--}}
-{{--                        <option>Holistic</option>--}}
-{{--                    </select>--}}
-{{--                </div>--}}
+                <label for="dish" class="form-label">Блюдо</label>
+                <div class="input-group mb-3">
+                    <select class="form-select" id="dish">
+                        <option>Reactive</option>
+                        <option>Solution</option>
+                        <option>Conglomeration</option>
+                        <option>Algoritm</option>
+                        <option>Holistic</option>
+                    </select>
+                </div>
 
                 <div class="input-group mb-3">
                     <button id="excel" class="btn btn-success" type="button" onclick="exportData('excel')" disabled>Экспорт в Excel</button>
@@ -149,6 +153,7 @@
 
     <script src="{{ asset('/flatpickr/flatpickr.js') }}"></script>
     <script src="{{ asset('/flatpickr/monthSelectPlugin.js') }}"></script>
+
 
     @if($report->type_date === 'month')
 
@@ -338,5 +343,4 @@
             return hours + "ч. " + minutes + "м.";
         }
     </script>
-
 @endsection
