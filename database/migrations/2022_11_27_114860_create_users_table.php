@@ -15,14 +15,15 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+
+            $table->unsignedBigInteger('corporation_id');
+            $table->index('corporation_id', 'corporation_user_idx');
+            $table->foreign('corporation_id', 'corporation_user_fk')->on('corporations')->references('id');
+
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-
-            $table->unsignedBigInteger('organization_id')->default(1);
-            $table->index('organization_id', 'organization_user_idx');
-            $table->foreign('organization_id', 'organization_user_fk')->on('organizations')->references('id');
 
             $table->unsignedSmallInteger('role')->default(1);
 

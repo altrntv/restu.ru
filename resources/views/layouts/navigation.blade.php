@@ -58,6 +58,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ Request::is('admin/corporation*') ? 'active' : '' }}" href="{{ route('admin.corporation.index') }}">
+                        <span data-feather='grid'></span>
+                        Корпорации
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ Request::is('admin/users*') && !Request::is('admin/users/reports*') ? 'active' : '' }}" href="{{ route('admin.user.index') }}">
                         <span data-feather='users'></span>
                         Пользователи

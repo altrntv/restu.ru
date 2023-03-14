@@ -16,15 +16,21 @@ return new class extends Migration
         Schema::create('admin_reports', function (Blueprint $table) {
             $table->id();
 
+            $table->unsignedBigInteger('corporation_id');
+            $table->index('corporation_id', 'corporation_admin_report_idx');
+            $table->foreign('corporation_id', 'corporation_admin_report_fk')->on('corporations')->references('id');
+
+            $table->boolean('whole_corporation')->default(1);
+
+            $table->unsignedBigInteger('company_id');
+            $table->index('company_id', 'company_admin_report_idx');
+            $table->foreign('company_id', 'company_admin_report_fk')->on('companies')->references('id');
+
             $table->string('name');
             $table->text('description');
             $table->string('slug');
             $table->string("icon")->default("bar-chart-2");
             $table->string("type_date")->default("day");
-
-            $table->unsignedBigInteger('organization_id');
-            $table->index('organization_id', 'organization_admin_report_idx');
-            $table->foreign('organization_id', 'organization_admin_report_fk')->on('organizations')->references('id');
 
             $table->json('report_json');
             $table->json('request_json');

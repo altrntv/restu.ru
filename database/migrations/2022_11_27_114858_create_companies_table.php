@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('organizations', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
+
+            $table->unsignedBigInteger('corporation_id');
+            $table->index('corporation_id', 'corporation_company_idx');
+            $table->foreign('corporation_id', 'corporation_company_fk')->on('corporations')->references('id');
 
             $table->string('name')->unique();
             $table->string('slug');
@@ -22,6 +26,8 @@ return new class extends Migration
             $table->string('server');
             $table->string('login');
             $table->string('password', 40);
+
+            $table->string('organization_guid', 36)->nullable();
 
             $table->timestamps();
             $table->softDeletes();
@@ -35,6 +41,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('organizations');
+        Schema::dropIfExists('companies');
     }
 };

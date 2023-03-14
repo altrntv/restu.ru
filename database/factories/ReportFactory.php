@@ -17,7 +17,13 @@ class ReportFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'corporation_id' => 1,
+            'company_id' => 1,
+            'name' => 'Тестовый отчет',
+            'description' => 'Тестовое описание',
+            'slug' => 'test',
+            'report_json' => '{}',
+            'request_json' => '{}'
         ];
     }
 }

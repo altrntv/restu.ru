@@ -49,6 +49,15 @@ Route::middleware('auth')->group(function () {
 //            Route::delete('/{report}', [\App\Http\Controllers\Admin\Report\DeleteController::class, "__invoke"])->name('admin.report.delete');
         });
 
+        Route::group(['namespace' => 'Corporation', 'prefix' => 'corporations'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\Corporation\IndexController::class, "__invoke"])->name('admin.corporation.index');
+            Route::get('/create', [\App\Http\Controllers\Admin\Corporation\CreateController::class, "__invoke"])->name('admin.corporation.create');
+            Route::post('/', [\App\Http\Controllers\Admin\Corporation\StoreController::class, "__invoke"])->name('admin.corporation.store');
+            Route::get('/{corporation}', [\App\Http\Controllers\Admin\Corporation\ShowController::class, "__invoke"])->name('admin.corporation.show');
+            Route::patch('/{corporation}', [\App\Http\Controllers\Admin\Corporation\UpdateController::class, "__invoke"])->name('admin.corporation.update');
+            Route::put('/{corporation}', [\App\Http\Controllers\Admin\Corporation\UpdateController::class, "update"])->name('admin.corporation.update.password');
+            Route::delete('/{corporation}', [\App\Http\Controllers\Admin\Corporation\DeleteController::class, "__invoke"])->name('admin.corporation.delete');
+        });
 
         Route::group(['namespace' => 'Organization', 'prefix' => 'organizations'], function () {
             Route::get('/', [\App\Http\Controllers\Admin\Organization\IndexController::class, "__invoke"])->name('admin.organization.index');

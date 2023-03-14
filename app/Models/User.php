@@ -57,10 +57,10 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the organization's user
+     * Get a user corporation
      */
-    public function organization(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function corporation(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Organization::class, 'organization_id', 'id');
+        return $this->belongsTo(Corporation::class, 'corporation_id', 'id');
     }
 }

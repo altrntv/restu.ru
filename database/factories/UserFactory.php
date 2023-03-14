@@ -18,10 +18,10 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'corporation_id' => 1,
             'name' => 'Павел Дыкин',
-            'email' => 'paulblitz@bk.ru',
+            'email' => 'paulrestalabs@gmail.com',
             'password' => '$2y$10$cVhquzPbFV5oPlkLOj8TpuzptMMCv5MPU8c7Sy2wHawhzsR5.7/r6', // 12345678
-            'organization_id' => 1,
             'role' => 0,
         ];
     }
